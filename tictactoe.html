@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Tic-Tac-Toe Workshop</title>
+    <style>
+        * {padding: 0; margin: 0; }
+        canvas { background: rgb(161, 184, 211); display: block; margin: 0 auto; }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="myCanvas" width="340" height="340"></canvas>
+    
+    <script>
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        var shapeX = true;
+        var columnCount = 3;
+        var rowCount = 3;
+        var squareOffset = 30;
+        var squareWidth = 90;
+        var squareHeight = 90;
+        var grid = [];
+        for (var c = 0; c < columnCount; c++){
+            grid[c] = [];
+            for(var r = 0; r < rowCount; r++){
+                grid[c][r] = {playerX: false, playerO: false}
+            }
+        }
+
+        function drawGrid(){
+            for(var c = 0; c < columnCount; c++){
+                if(c == 0 || c ==1 ){  //first column - no left border, all right borders
+                    for(var r = 0; r < rowCount; r++){
+                    drawRightBorder((c*squareWidth) + squareOffset, (r*squareHeight) + squareOffset);
+                    }
+            }
+            for(var r = 1; r < rowCount; r++){
+                drawTopBorder((c*squareWidth) + squareOffset, (r*squareHeight) + squareOffset);
+            }
+        }
+        }
+
+        function drawRightBorder(x, y){
+            ctx.beginPath();
+            ctx.moveTo(x + squareWidth, y);
+            ctx.lineTo(x + squareWidth, y + squareHeight);
+            ctx.stroke();
+        }
+
+        function drawTopBorder(x, y) {
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + squareWidth, y);
+            ctx.stroke();
+        }
+
+        function buttonPressed(e){
+            alert("PRESS");
+        }
+        
+        function clickHandler(e) {
+            alert("click detected.");
+            var canvasRectangle = canvas.getBoundingClientRect();
+            var xPos = e.clientX - canvasRectangle.left;
+            var yPos = e.clientY - canvasRectangle.top;
+            var cTile = xPos/(squareWidth+squareOffset);
+            var rTile = yPos/(squareHeight+squareOffset);
+            console.log(cTile + ", " + rTile);  //debug to see mouse location
+
+            var c = Math.floor(cTile);
+            var r = Math.floor(rTile);
+
+            console.log(c + ", " + r); //debug to see if grid coordiates are being calculated right to match with the 2D array
+
+            
+        }
+
+        drawGrid();
+
+        document.addEventListener("click", clickHandler, false)
+        //canvas.onclick = buttonPressed();
+
+        //drawRightBorder(30, 80);
+        //drawSpecial();
+
+    </script>
+
+    
+</body>
+</html>
