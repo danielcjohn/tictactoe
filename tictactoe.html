@@ -26,7 +26,7 @@
         for (var c = 0; c < columnCount; c++){
             grid[c] = [];
             for(var r = 0; r < rowCount; r++){
-                grid[c][r] = {playerX: false, playerO: false}
+                grid[c][r] = {active: false, playerX: false, playerO: false}
             }
         }
 
@@ -74,7 +74,7 @@
             var r = Math.floor(rTile);
 
             console.log(c + ", " + r); //debug to see if grid coordiates are being calculated right to match with the 2D array
-
+            
             
         }
 
