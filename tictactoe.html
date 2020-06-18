@@ -17,19 +17,23 @@
         var canvas = document.getElementById("myCanvas");
         var ctx = canvas.getContext("2d");
 
-        //reset on new game
+        //need to be reset on new game
         var shapeX = true;
+        var diagonal1 = 0;  //top left to bottom right diagonal: -1 means diagonal is impossible, 0 means diagonal is possible, 1 means diagonal exists
+        var diagonal2 = 0;  //bottom left to top right diagonal: ^above
+        var middleSquareActive = false; //denotes if the middle square is active
+
         var gameOver = false;
         var teamXWins = false;
         var teamOWins = false;
         var turns = 0;
         //
         
-        var columnCount = 3;
-        var rowCount = 3;
-        var squareOffset = 30;
-        var squareWidth = 90;
-        var squareHeight = 90;
+        const columnCount = 3;
+        const rowCount = 3;
+        const squareOffset = 30;
+        const squareWidth = 90;
+        const squareHeight = 90;
         var grid = [];
         for (var c = 0; c < columnCount; c++){
             grid[c] = [];
@@ -51,6 +55,40 @@
                 drawTopBorder((c*squareWidth) + squareOffset, (r*squareHeight) + squareOffset);
             }
         }
+        }
+
+        function drawShape(c, r){   //draw X or O
+            console.log("Entered drawShape()");
+            var drawOffset = 20;
+            var left = (c*squareWidth) + squareOffset;
+            var top = (r*squareHeight) + squareOffset;
+            var right = left + squareWidth;
+            var bottom = top + squareHeight;
+            var circleCenterX = left + (squareWidth/2);
+            var circleCenterY = top + (squareHeight/2);
+
+            if(shapeX){
+                //draw X
+                grid[c][r].playerX = true;
+                
+                ctx.beginPath();
+                ctx.moveTo(left + drawOffset, top + drawOffset);
+                ctx.lineTo(right - drawOffset, bottom - drawOffset);
+                ctx.stroke();
+
+                ctx.beginPath()
+                ctx.moveTo(right - drawOffset, top + drawOffset);
+                ctx.lineTo(left + drawOffset, bottom - drawOffset);
+                ctx.stroke();
+            }
+            else {
+                //draw O
+                grid[c][r].playerO = true;
+                
+                ctx.beginPath();
+                ctx.arc(circleCenterX, circleCenterY, squareWidth/2 - drawOffset, 0, Math.PI*2);
+                ctx.stroke();
+            }
         }
 
         function drawRightBorder(x, y){
@@ -134,35 +172,19 @@
                     return;
                 } 
 
-                if( (c == 1) && (r == 1)){  //Middle Square - check its diagonals
-                    //top left to bottom right
-                    if(grid[2][2].shapeX == true){
-                        if(grid[0][0].shapeX == true){
-                            ctx.beginPath();
-                            ctx.moveTo(squareOffset, squareOffset);
-                            ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, 
-                                        (2*squareHeight) + squareOffset + squareHeight);
-                            ctx.stroke();
+                if(!middleSquareActive){
+                    if( (c == 1) && (r == 1)){
+                        middleSquareActive = true;
+                    }
+                }
 
-                            gameOver = true;
-                            teamXWins = true;
-                            alert("Team X wins!");
-                            //document.location.reload();
-                        }
+                if(middleSquareActive){
+                    if(diagonal1 == 0){
+                        diagonal1Check();
                     }
 
-                    if(grid[2][0].shapeX == true){
-                        if(grid[0][2].shapeX == true){
-                            ctx.beginPath();
-                            ctx.moveTo(squareOffset, (2*squareHeight) + squareOffset + squareHeight);
-                            ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, squareOffset);
-                            ctx.stroke();
-                            
-                            gameOver = true;
-                            teamXWins = true;
-                            alert("Team X wins!");
-                            //document.location.reload();
-                        }
+                    if(diagonal2 == 0){
+                        diagonal2Check();
                     }
                 }
             }
@@ -190,37 +212,19 @@
                     return;
                 } 
 
-                if( (c == 1) && (r == 1)){  //Middle Square - check its diagonals
-                    
-                    //top left to bottom right diagonal
-                    if(grid[2][2].shapeO == true){
-                        if(grid[0][0].shapeO == true){
-                            ctx.beginPath();
-                            ctx.moveTo(squareOffset, squareOffset);
-                            ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, 
-                                        (2*squareHeight) + squareOffset + squareHeight);
-                            ctx.stroke();
+                if(!middleSquareActive){
+                    if( (c == 1) && (r == 1)){
+                        middleSquareActive = true;
+                    }
+                }
 
-                            gameOver = true;
-                            teamOWins = true;
-                            alert("Team O wins!");
-                            //document.location.reload();
-                        }
+                if(middleSquareActive){
+                    if(diagonal1 == 0){
+                        diagonal1Check();
                     }
 
-                    //bottom left to top right diagonal
-                    if(grid[2][0].shapeO == true){
-                        if(grid[0][2].shapeO == true){
-                            ctx.beginPath();
-                            ctx.moveTo(squareOffset, (2*squareHeight) + squareOffset + squareHeight);
-                            ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, squareOffset);
-                            ctx.stroke();
-                            
-                            gameOver = true;
-                            teamOWins = true;
-                            alert("Team O wins!");
-                            //document.location.reload();
-                        }
+                    if(diagonal2 == 0){
+                        diagonal2Check();
                     }
                 }
             }
@@ -248,37 +252,74 @@
             }
         }
 
-        function drawShape(c, r){   //draw X or O
-            console.log("Entered drawShape()");
-            var drawOffset = 20;
-            var left = (c*squareWidth) + squareOffset;
-            var top = (r*squareHeight) + squareOffset;
-            var right = left + squareWidth;
-            var bottom = top + squareHeight;
-            var circleCenterX = left + (squareWidth/2);
-            var circleCenterY = top + (squareHeight/2);
-
+        function diagonal1Check(){
+            //checks Diagonal 1 (top left to bottom right)
             if(shapeX){
-                //draw X
-                grid[c][r].playerX = true;
-                
-                ctx.beginPath();
-                ctx.moveTo(left + drawOffset, top + drawOffset);
-                ctx.lineTo(right - drawOffset, bottom - drawOffset);
-                ctx.stroke();
+                var adjSquare1 = null; //?
 
-                ctx.beginPath()
-                ctx.moveTo(right - drawOffset, top + drawOffset);
-                ctx.lineTo(left + drawOffset, bottom - drawOffset);
-                ctx.stroke();
-            }
-            else {
-                //draw O
-                grid[c][r].playerO = true;
+                if(grid[2][2].shapeX == true){
+                    if(grid[0][0].shapeX == true){
+                        ctx.beginPath();
+                        ctx.moveTo(squareOffset, squareOffset);
+                        ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, 
+                                    (2*squareHeight) + squareOffset + squareHeight);
+                        ctx.stroke();
+
+                        gameOver = true;
+                        teamXWins = true;
+                        alert("Team X wins!");
+                        //document.location.reload();
+                        }
+                    }
+            }else{
+                if(grid[2][2].shapeO == true){
+                    if(grid[0][0].shapeO == true){
+                        ctx.beginPath();
+                        ctx.moveTo(squareOffset, squareOffset);
+                        ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, 
+                                    (2*squareHeight) + squareOffset + squareHeight);
+                        ctx.stroke();
+
+                        gameOver = true;
+                        teamOWins = true;
+                        alert("Team O wins!");
+                        //document.location.reload();
+                    }
+                }
                 
-                ctx.beginPath();
-                ctx.arc(circleCenterX, circleCenterY, squareWidth/2 - drawOffset, 0, Math.PI*2);
-                ctx.stroke();
+            }
+        }
+
+        function diagonal2Check(){
+            //checks Diagonal 2 (bottom left to top right)
+            if(shapeX){
+                if(grid[2][0].shapeX == true){
+                    if(grid[0][2].shapeX == true){
+                        ctx.beginPath();
+                        ctx.moveTo(squareOffset, (2*squareHeight) + squareOffset + squareHeight);
+                        ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, squareOffset);
+                        ctx.stroke();
+                            
+                        gameOver = true;
+                        teamXWins = true;
+                        alert("Team X wins!");
+                        //document.location.reload();
+                    }
+                }
+            }else{
+                if(grid[2][0].shapeO == true){
+                    if(grid[0][2].shapeO == true){
+                        ctx.beginPath();
+                        ctx.moveTo(squareOffset, (2*squareHeight) + squareOffset + squareHeight);
+                        ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, squareOffset);
+                        ctx.stroke();
+                            
+                        gameOver = true;
+                        teamOWins = true;
+                        alert("Team O wins!");
+                        //document.location.reload();
+                    }
+                }
             }
         }
 
