@@ -72,7 +72,7 @@
         }
         
         function clickHandler(e) {
-            alert("click detected.");
+            //alert("click detected.");
             var canvasRectangle = canvas.getBoundingClientRect();
             var xPos = e.clientX - canvasRectangle.left;
             var yPos = e.clientY - canvasRectangle.top;
@@ -134,17 +134,36 @@
                     return;
                 } 
 
-                if(grid[c][r].diagonalXNeighbors == 2){
-                    ctx.beginPath();
-                    ctx.moveTo(squareOffset, squareOffset);
-                    ctx.lineTo((c*squareWidth) + squareOffset + squareWidth, 
-                                (r*squareHeight) + squareOffset + squareHeight);
-                    ctx.stroke();
-                    gameOver = true;
-                    teamXWins = true;
-                    alert("Team X wins!");
-                    document.location.reload();
-                    return;
+                if( (c == 1) && (r == 1)){  //Middle Square - check its diagonals
+                    //top left to bottom right
+                    if(grid[2][2].shapeX == true){
+                        if(grid[0][0].shapeX == true){
+                            ctx.beginPath();
+                            ctx.moveTo(squareOffset, squareOffset);
+                            ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, 
+                                        (2*squareHeight) + squareOffset + squareHeight);
+                            ctx.stroke();
+
+                            gameOver = true;
+                            teamXWins = true;
+                            alert("Team X wins!");
+                            //document.location.reload();
+                        }
+                    }
+
+                    if(grid[2][0].shapeX == true){
+                        if(grid[0][2].shapeX == true){
+                            ctx.beginPath();
+                            ctx.moveTo(squareOffset, (2*squareHeight) + squareOffset + squareHeight);
+                            ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, squareOffset);
+                            ctx.stroke();
+                            
+                            gameOver = true;
+                            teamXWins = true;
+                            alert("Team X wins!");
+                            //document.location.reload();
+                        }
+                    }
                 }
             }
             else{
@@ -171,17 +190,38 @@
                     return;
                 } 
 
-                if(grid[c][r].diagonalONeighbors == 2){
-                    ctx.beginPath();
-                    ctx.moveTo(squareOffset, squareOffset);
-                    ctx.lineTo((c*squareWidth) + squareOffset + squareWidth, 
-                                (r*squareHeight) + squareOffset + squareHeight);
-                    ctx.stroke();
-                    gameOver = true;
-                    teamOWins = true;
-                    alert("Team O wins!");
-                    document.location.reload();
-                    return;
+                if( (c == 1) && (r == 1)){  //Middle Square - check its diagonals
+                    
+                    //top left to bottom right diagonal
+                    if(grid[2][2].shapeO == true){
+                        if(grid[0][0].shapeO == true){
+                            ctx.beginPath();
+                            ctx.moveTo(squareOffset, squareOffset);
+                            ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, 
+                                        (2*squareHeight) + squareOffset + squareHeight);
+                            ctx.stroke();
+
+                            gameOver = true;
+                            teamOWins = true;
+                            alert("Team O wins!");
+                            //document.location.reload();
+                        }
+                    }
+
+                    //bottom left to top right diagonal
+                    if(grid[2][0].shapeO == true){
+                        if(grid[0][2].shapeO == true){
+                            ctx.beginPath();
+                            ctx.moveTo(squareOffset, (2*squareHeight) + squareOffset + squareHeight);
+                            ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, squareOffset);
+                            ctx.stroke();
+                            
+                            gameOver = true;
+                            teamOWins = true;
+                            alert("Team O wins!");
+                            //document.location.reload();
+                        }
+                    }
                 }
             }
         }
@@ -195,8 +235,6 @@
                 grid[c][(r+1)%3].verticalXNeighbors +=1;
                 grid[c][(r+2)%3].verticalXNeighbors +=1;
 
-                grid[(c+1)%3][(r+1)%3].diagonalXNeighbors +=1;
-                grid[(c+2)%3][(r+2)%3].diagonalXNeighbors +=1;
                 shapeX = false;
             }
             else{
@@ -206,14 +244,12 @@
                 grid[c][(r+1)%3].verticalONeighbors +=1;
                 grid[c][(r+2)%3].verticalONeighbors +=1;
 
-                grid[(c+1)%3][(r+1)%3].diagonalONeighbors +=1;
-                grid[(c+2)%3][(r+2)%3].diagonalONeighbors +=1;
                 shapeX = true;
             }
         }
 
         function drawShape(c, r){   //draw X or O
-            console.log("Enterd drawShape()");
+            console.log("Entered drawShape()");
             var drawOffset = 20;
             var left = (c*squareWidth) + squareOffset;
             var top = (r*squareHeight) + squareOffset;
@@ -246,8 +282,8 @@
             }
         }
 
-        var interval = setInterval(drawGrid, 10);
-        //drawGrid();
+        //var interval = setInterval(drawGrid, 10);
+        drawGrid();
 
         document.addEventListener("click", clickHandler, false)
         //canvas.onclick = buttonPressed();
