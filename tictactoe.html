@@ -16,7 +16,15 @@
     <script>
         var canvas = document.getElementById("myCanvas");
         var ctx = canvas.getContext("2d");
+
+        //reset on new game
         var shapeX = true;
+        var gameOver = false;
+        var teamXWins = false;
+        var teamOWins = false;
+        var turns = 0;
+        //
+        
         var columnCount = 3;
         var rowCount = 3;
         var squareOffset = 30;
@@ -26,13 +34,15 @@
         for (var c = 0; c < columnCount; c++){
             grid[c] = [];
             for(var r = 0; r < rowCount; r++){
-                grid[c][r] = {active: false, playerX: false, playerO: false}
+                grid[c][r] = {active: false, playerX: false, playerO: false,
+                                verticalXNeighbors: 0, horizontalXNeighbors: 0, diagonalXNeighbors: 0,
+                                verticalONeighbors: 0, horizontalONeighbors: 0, diagonalONeighbors: 0}
             }
         }
 
         function drawGrid(){
             for(var c = 0; c < columnCount; c++){
-                if(c == 0 || c ==1 ){  //first column - no left border, all right borders
+                if(c == 0 || c == 1 ){  //first column - no left border, all right borders
                     for(var r = 0; r < rowCount; r++){
                     drawRightBorder((c*squareWidth) + squareOffset, (r*squareHeight) + squareOffset);
                     }
@@ -68,17 +78,176 @@
             var yPos = e.clientY - canvasRectangle.top;
             var cTile = xPos/(squareWidth+squareOffset);
             var rTile = yPos/(squareHeight+squareOffset);
-            console.log(cTile + ", " + rTile);  //debug to see mouse location
+            console.log("Exact Click Coordinates: " + cTile + ", " + rTile);  //debug to see mouse location
 
             var c = Math.floor(cTile);
             var r = Math.floor(rTile);
 
-            console.log(c + ", " + r); //debug to see if grid coordiates are being calculated right to match with the 2D array
+            console.log("Normalized Click Coordinates: " + c + ", " + r); //debug to see if grid coordiates are being calculated right to match with the 2D array
             
+            if(grid[c][r].active == false){ //if square has already been clicked and set to true, ignore
+                console.log("Square was inactive");
+                handleAction(c, r);
+            }
             
         }
 
-        drawGrid();
+        function handleAction(c, r) {
+            console.log("Entered handleAction()");
+            grid[c][r].active = true;
+            turns +=1;
+            drawShape(c,r); //function to draw X or O
+            checkNeighbors(c,r);
+            if(turns == 9){
+                gameOver = true;
+                alert("Game ends on a draw :) ");
+                document.location.reload();
+                return;
+            }
+            updateNeighbors(c,r);   
+        }
+
+        function checkNeighbors(c, r){
+            console.log("Entered checkNeighbors()");
+            console.log("shapeX is: " + shapeX);
+            if(shapeX){
+                if(grid[c][r].horizontalXNeighbors == 2){
+                    ctx.beginPath();
+                    ctx.moveTo(squareOffset, squareOffset + (squareHeight/2));
+                    ctx.lineTo((c*squareWidth) + squareOffset + squareWidth, squareOffset + (squareHeight/2));
+                    ctx.stroke();
+                    gameOver = true;
+                    teamXWins = true;
+                    alert("Team X wins!");
+                    document.location.reload();
+                    return;
+                } 
+                if(grid[c][r].verticalXNeighbors == 2){
+                    ctx.beginPath();
+                    ctx.moveTo(squareOffset + (squareWidth/2), squareOffset);
+                    ctx.lineTo(squareOffset + (squareWidth/2), (r*squareHeight) + squareOffset + squareHeight);
+                    ctx.stroke();
+                    gameOver = true;
+                    teamXWins = true;
+                    alert("Team X wins!");
+                    document.location.reload();
+                    return;
+                } 
+
+                if(grid[c][r].diagonalXNeighbors == 2){
+                    ctx.beginPath();
+                    ctx.moveTo(squareOffset, squareOffset);
+                    ctx.lineTo((c*squareWidth) + squareOffset + squareWidth, 
+                                (r*squareHeight) + squareOffset + squareHeight);
+                    ctx.stroke();
+                    gameOver = true;
+                    teamXWins = true;
+                    alert("Team X wins!");
+                    document.location.reload();
+                    return;
+                }
+            }
+            else{
+                if(grid[c][r].horizontalONeighbors == 2){
+                    ctx.beginPath();
+                    ctx.moveTo(squareOffset, squareOffset + (squareHeight/2));
+                    ctx.lineTo((c*squareWidth) + squareOffset + squareWidth, squareOffset + (squareHeight/2));
+                    ctx.stroke();
+                    gameOver = true;
+                    teamOWins = true;
+                    alert("Team O wins!");
+                    document.location.reload();
+                    return;
+                } 
+                if(grid[c][r].verticalONeighbors == 2){
+                    ctx.beginPath();
+                    ctx.moveTo(squareOffset + (squareWidth/2), squareOffset);
+                    ctx.lineTo(squareOffset + (squareWidth/2), (r*squareHeight) + squareOffset + squareHeight);
+                    ctx.stroke();
+                    gameOver = true;
+                    teamOWins = true;
+                    alert("Team O wins!");
+                    document.location.reload();
+                    return;
+                } 
+
+                if(grid[c][r].diagonalONeighbors == 2){
+                    ctx.beginPath();
+                    ctx.moveTo(squareOffset, squareOffset);
+                    ctx.lineTo((c*squareWidth) + squareOffset + squareWidth, 
+                                (r*squareHeight) + squareOffset + squareHeight);
+                    ctx.stroke();
+                    gameOver = true;
+                    teamOWins = true;
+                    alert("Team O wins!");
+                    document.location.reload();
+                    return;
+                }
+            }
+        }
+
+        function updateNeighbors(c, r){
+            console.log("Entered updateNeighbors()");
+            if(shapeX){
+                grid[(c+1)%3][r].horizontalXNeighbors += 1;
+                grid[(c+2)%3][r].horizontalXNeighbors += 1;
+
+                grid[c][(r+1)%3].verticalXNeighbors +=1;
+                grid[c][(r+2)%3].verticalXNeighbors +=1;
+
+                grid[(c+1)%3][(r+1)%3].diagonalXNeighbors +=1;
+                grid[(c+2)%3][(r+2)%3].diagonalXNeighbors +=1;
+                shapeX = false;
+            }
+            else{
+                grid[(c+1)%3][r].horizontalONeighbors += 1;
+                grid[(c+2)%3][r].horizontalONeighbors += 1;
+
+                grid[c][(r+1)%3].verticalONeighbors +=1;
+                grid[c][(r+2)%3].verticalONeighbors +=1;
+
+                grid[(c+1)%3][(r+1)%3].diagonalONeighbors +=1;
+                grid[(c+2)%3][(r+2)%3].diagonalONeighbors +=1;
+                shapeX = true;
+            }
+        }
+
+        function drawShape(c, r){   //draw X or O
+            console.log("Enterd drawShape()");
+            var drawOffset = 20;
+            var left = (c*squareWidth) + squareOffset;
+            var top = (r*squareHeight) + squareOffset;
+            var right = left + squareWidth;
+            var bottom = top + squareHeight;
+            var circleCenterX = left + (squareWidth/2);
+            var circleCenterY = top + (squareHeight/2);
+
+            if(shapeX){
+                //draw X
+                grid[c][r].playerX = true;
+                
+                ctx.beginPath();
+                ctx.moveTo(left + drawOffset, top + drawOffset);
+                ctx.lineTo(right - drawOffset, bottom - drawOffset);
+                ctx.stroke();
+
+                ctx.beginPath()
+                ctx.moveTo(right - drawOffset, top + drawOffset);
+                ctx.lineTo(left + drawOffset, bottom - drawOffset);
+                ctx.stroke();
+            }
+            else {
+                //draw O
+                grid[c][r].playerO = true;
+                
+                ctx.beginPath();
+                ctx.arc(circleCenterX, circleCenterY, squareWidth/2 - drawOffset, 0, Math.PI*2);
+                ctx.stroke();
+            }
+        }
+
+        var interval = setInterval(drawGrid, 10);
+        //drawGrid();
 
         document.addEventListener("click", clickHandler, false)
         //canvas.onclick = buttonPressed();
