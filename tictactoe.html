@@ -187,11 +187,12 @@
                 if(!middleSquareActive){    //check if the middle square has been selected
                     if( (c == 1) && (r == 1)){
                         middleSquareActive = true;
-                        if(grid[1][1].playerO == true){ //Since shapeX is true, this means Player X took the center square
-                            //This makes both diagonals impossible for Player O
-                            diagonal1PlayerO = -1;
-                            diagonal2PlayerO = -1;
-                        }
+                       //Since shapeX is true, this means Player X took the center square
+                        //This makes both diagonals impossible for Player O
+
+                        diagonal1PlayerO = -1;
+                        diagonal2PlayerO = -1;
+                        
                     }
                 }
 
@@ -234,11 +235,12 @@
                 if(!middleSquareActive){
                     if( (c == 1) && (r == 1)){
                         middleSquareActive = true;
-                        if(grid[1][1].playerX == true){ //Since shapeX is false, this means Player O took the center square
-                            //This makes both diagonals impossible for Player X
-                            diagonal1PlayerX = -1;
-                            diagonal2PlayerX = -1;
-                        }
+                        //Since shapeX is false, this means Player O took the center square
+                        //This makes both diagonals impossible for Player X
+                            
+                        diagonal1PlayerX = -1;
+                        diagonal2PlayerX = -1;
+                        
                     }
                 }
 
@@ -296,8 +298,8 @@
                     return;
                 }
 
-                if(grid[2][2].playerX == true){
-                    if(grid[0][0].playerX == true){
+                if(adjSquare1.playerX == true){
+                    if(adjSquare2.playerX == true){
                         ctx.beginPath();
                         ctx.moveTo(squareOffset, squareOffset);
                         ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, 
@@ -318,8 +320,8 @@
                     diagonal1PlayerO = -1;
                     return;
                 }
-                if(grid[2][2].playerO == true){
-                    if(grid[0][0].playerO == true){
+                if(adjSquare1.playerO == true){
+                    if(adjSquare2.playerO == true){
                         ctx.beginPath();
                         ctx.moveTo(squareOffset, squareOffset);
                         ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, 
@@ -352,8 +354,8 @@
                     return;
                 }
 
-                if(grid[2][0].playerX == true){
-                    if(grid[0][2].playerX == true){
+                if(adjSquare1.playerX == true){
+                    if(adjSquare2.playerX == true){
                         ctx.beginPath();
                         ctx.moveTo(squareOffset, (2*squareHeight) + squareOffset + squareHeight);
                         ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, squareOffset);
@@ -374,8 +376,8 @@
                     return;
                 }
 
-                if(grid[2][0].playerO == true){
-                    if(grid[0][2].playerO == true){
+                if(adjSquare1.playerO == true){
+                    if(adjSquare2.playerO == true){
                         ctx.beginPath();
                         ctx.moveTo(squareOffset, (2*squareHeight) + squareOffset + squareHeight);
                         ctx.lineTo((2*squareWidth) + squareOffset + squareWidth, squareOffset);
