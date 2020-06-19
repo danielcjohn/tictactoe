@@ -187,6 +187,11 @@
                 if(!middleSquareActive){    //check if the middle square has been selected
                     if( (c == 1) && (r == 1)){
                         middleSquareActive = true;
+                        if(grid[1][1].playerO == true){ //Since shapeX is true, this means Player X took the center square
+                            //This makes both diagonals impossible for Player O
+                            diagonal1PlayerO = -1;
+                            diagonal2PlayerO = -1;
+                        }
                     }
                 }
 
@@ -202,7 +207,7 @@
                     }
                 }
             }
-            else{
+            else{   // shapeX is false which means Player O selected a square
                 if(grid[c][r].horizontalONeighbors == 2){
                     ctx.beginPath();
                     ctx.moveTo(squareOffset, squareOffset + (squareHeight/2));
@@ -229,6 +234,11 @@
                 if(!middleSquareActive){
                     if( (c == 1) && (r == 1)){
                         middleSquareActive = true;
+                        if(grid[1][1].playerX == true){ //Since shapeX is false, this means Player O took the center square
+                            //This makes both diagonals impossible for Player X
+                            diagonal1PlayerX = -1;
+                            diagonal2PlayerX = -1;
+                        }
                     }
                 }
 
@@ -353,7 +363,7 @@
                         gameOver = true;
                         teamXWins = true;
                         alert("Team X wins!");
-                        //document.location.reload();
+                        document.location.reload();
                     }
                 }
             }else{
@@ -375,7 +385,7 @@
                         gameOver = true;
                         teamOWins = true;
                         alert("Team O wins!");
-                        //document.location.reload();
+                        document.location.reload();
                     }
                 }
             }
@@ -387,7 +397,7 @@
         document.addEventListener("click", clickHandler, false) //Every time a click is registered, the clickHandler() function is called
                                                                 //If the click is valid (the square hasn't been selected before), then
                                                                 //handleAction() is called. 
-                                                                
+
         //canvas.onclick = buttonPressed();
 
         //drawRightBorder(30, 80);
