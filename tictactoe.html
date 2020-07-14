@@ -121,16 +121,16 @@
             var yPos = e.clientY - canvasRectangle.top;
             var cTile = xPos/(squareWidth+squareOffset);
             var rTile = yPos/(squareHeight+squareOffset);
-            console.log("Exact Click Coordinates: " + cTile + ", " + rTile);  //debug to see mouse location
+            //console.log("Exact Click Coordinates: " + cTile + ", " + rTile);  //debug to see mouse location
 
             //Normalize click coordinates to match with our grid[][] data structure
             var c = Math.floor(cTile);
             var r = Math.floor(rTile);
 
-            console.log("Normalized Click Coordinates: " + c + ", " + r); //debug to see if grid coordiates are being calculated right to match with the 2D array
+            //console.log("Normalized Click Coordinates: " + c + ", " + r); //debug to see if grid coordiates are being calculated right to match with the 2D array
             
             if(grid[c][r].active == false){ //if square has already been clicked and set to true, ignore the click
-                console.log("Square was inactive");
+                //console.log("Square was inactive");
                 handleAction(c, r);
             }
             
@@ -142,7 +142,7 @@
         // Calls checkNeighbors() 
         // Calls updateNeighbors() 
 
-            console.log("Entered handleAction()");
+            //console.log("Entered handleAction()");
             grid[c][r].active = true;
             turns +=1;
             drawShape(c,r); //function to draw X or O
@@ -157,8 +157,8 @@
         }
 
         function checkNeighbors(c, r){
-            console.log("Entered checkNeighbors()");    //debug statement 
-            console.log("shapeX is: " + shapeX);        //debug statement
+            //console.log("Entered checkNeighbors()");    //debug statement 
+            //console.log("shapeX is: " + shapeX);        //debug statement
 
             if(shapeX){
                 if(grid[c][r].horizontalXNeighbors == 2){
@@ -259,7 +259,7 @@
         }
 
         function updateNeighbors(c, r){ //Horizontal and Vertical neighbors updated, shapeX swapped so turn goes to other player
-            console.log("Entered updateNeighbors()");   //debug statement
+            //console.log("Entered updateNeighbors()");   //debug statement
             
             if(shapeX){
                 grid[(c+1)%3][r].horizontalXNeighbors += 1;
@@ -283,12 +283,12 @@
 
         function diagonal1Check(){   //checks Diagonal 1 (top left to bottom right)
            
-            console.log("Entered diagonal1Check()");    //debug statemet
+            //console.log("Entered diagonal1Check()");    //debug statemet
 
             var adjSquare1 = grid[2][2];    //bottom right square
             var adjSquare2 = grid[0][0];    //top left square
-            console.log(adjSquare1);        //debug statement
-            console.log(adjSquare2);        //debug statement
+            //console.log(adjSquare1);        //debug statement
+            //console.log(adjSquare2);        //debug statement
             
             if(shapeX){
 
@@ -341,7 +341,7 @@
 
         function diagonal2Check(){
             //checks Diagonal 2 (bottom left to top right)
-            console.log("Entered diagonal2Check()");
+            //console.log("Entered diagonal2Check()");
 
             var adjSquare1 = grid[2][0];    //top right square
             var adjSquare2 = grid[0][2];    //bottom left square
